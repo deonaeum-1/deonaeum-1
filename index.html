@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>더나음 — Better Choices, Better Health</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--p:#0F6E56;--pl:#1D9E75;--pb:#E1F5EE;--pd:#085041;--ac:#EF9F27;--ab:#FAEEDA;--bg:#F5F5F2;--card:#FFFFFF;--bd:#E0E0DD;--t:#1A1A1A;--t2:#6B6B6B;--t3:#9B9B9B;--red:#D85A30}
+body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard',sans-serif;background:var(--bg);color:var(--t);max-width:420px;margin:0 auto;min-height:100vh;-webkit-font-smoothing:antialiased}
+.screen{display:none;min-height:100vh;padding-bottom:72px}.screen.on{display:block}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--card);border-bottom:.5px solid var(--bd);position:sticky;top:0;z-index:100}
+.logo{font-size:18px;font-weight:700;color:var(--pd);letter-spacing:-.5px}
+.logo-sub{font-size:9px;color:var(--t3);letter-spacing:.3px;padding-top:2px}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;background:var(--card);border-top:.5px solid var(--bd);display:flex;z-index:90}
+.tab{flex:1;padding:10px 0 12px;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--t3);font-size:10px}
+.tab.on{color:var(--p)}.tab-icon{font-size:20px}
+/* LOGIN */
+.lw{min-height:100vh;background:linear-gradient(180deg,#B8D5C7,#DAE8DD);display:flex;flex-direction:column;justify-content:center;padding:40px 28px}
+.ll{text-align:center;margin-bottom:50px}
+.ll h1{font-size:42px;font-weight:700;color:var(--pd);letter-spacing:-1.5px;margin-bottom:8px}
+.ll p{font-size:13px;color:var(--pd);opacity:.7}
+.lc{background:white;border-radius:20px;padding:28px 24px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.ltabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:20px}
+.ltab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:600;border:0;background:none;cursor:pointer;border-radius:8px;color:var(--t3)}
+.ltab.on{background:white;color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.inp{width:100%;padding:13px 16px;border-radius:12px;border:1px solid var(--bd);font-size:14px;margin-bottom:10px;background:#FAFAF8;font-family:inherit}
+.inp:focus{outline:none;border-color:var(--pl);background:white}
+.hint{font-size:11px;color:var(--t3);margin-bottom:10px;margin-top:-6px;padding-left:4px}
+.btn{width:100%;padding:14px;border-radius:12px;background:var(--pl);color:white;border:0;font-size:15px;font-weight:600;cursor:pointer}
+.btn:active{transform:scale(.98)}
+.btn-sm{padding:12px;border-radius:12px;background:var(--pl);color:white;border:0;font-size:14px;font-weight:600;cursor:pointer}
+.btn-out{background:var(--bg);color:var(--t2);border:1px solid var(--bd)}
+.err{font-size:12px;color:var(--red);padding:8px 12px;background:#FFF0ED;border-radius:8px;margin-bottom:10px;display:none}
+.li{text-align:center;margin-top:20px;font-size:11px;color:var(--pd);opacity:.7;line-height:1.6}
+/* HOME */
+.hw{padding:16px}
+.st{font-size:22px;font-weight:700;margin-bottom:4px;letter-spacing:-.5px}
+.ss{font-size:13px;color:var(--t2);margin-bottom:20px}
+.cc{background:var(--card);border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.05);cursor:pointer;border:.5px solid var(--bd);transition:transform .15s}
+.cc:active{transform:scale(.99)}
+.ct{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;background:#111}
+.ct video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:80px;background:linear-gradient(135deg,#085041,#1D9E75)}
+.tov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.5) 100%)}
+.ttag{position:absolute;top:12px;left:12px;background:var(--pl);color:white;font-size:10px;font-weight:700;padding:4px 10px;border-radius:999px}
+.tplay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.tplay svg{width:20px;height:20px;fill:var(--pd);margin-left:3px}
+.ci{padding:14px}
+.cit{font-size:14px;font-weight:700;margin-bottom:6px}
+.cm{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--t3)}
+.tsm{background:var(--pb);color:var(--p);padding:3px 8px;border-radius:6px;font-size:10px;font-weight:600}
+.tdone{background:#E8F5E9;color:#2E7D32;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:600}
+/* VIDEO */
+.vw{width:100%;aspect-ratio:16/9;background:#000;position:relative;overflow:hidden}
+.vw video{width:100%;height:100%;object-fit:cover}
+.vbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:100px;background:linear-gradient(135deg,#085041,#1D9E75)}
+.vov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.4) 100%)}
+.vtag{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.5);color:white;font-size:11px;padding:4px 10px;border-radius:999px;backdrop-filter:blur(10px);display:flex;align-items:center;gap:6px}
+.dot{width:6px;height:6px;background:#FF4444;border-radius:50%;animation:blink 1.5s infinite}
+@keyframes blink{50%{opacity:.3}}
+/* PATIENT */
+.pc{background:var(--card);margin:-14px 16px 0;padding:16px;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.04);position:relative;z-index:2}
+.pn{font-size:16px;font-weight:700;margin-bottom:12px}
+.ir{display:flex;gap:10px;font-size:13px;margin-bottom:8px}.ir:last-child{margin-bottom:0}
+.il{color:var(--t3);min-width:52px;font-size:12px}
+/* STEP */
+.sh{padding:16px;background:var(--card);border-bottom:.5px solid var(--bd);position:sticky;top:0;z-index:50}
+.sp{display:flex;gap:4px;margin-bottom:12px}
+.sd{flex:1;height:3px;background:var(--bd);border-radius:2px}
+.sd.done,.sd.active{background:var(--pl)}
+.stt{font-size:17px;font-weight:700;margin-bottom:4px}
+.sts{font-size:12px;color:var(--t2)}
+.slr{display:flex;gap:6px;margin-top:12px}
+.sl{flex:1;padding:7px 8px;border-radius:10px;text-align:center;font-size:11px;font-weight:600;border:1.5px dashed var(--bd);color:var(--t3)}
+.sl.done{background:var(--pb);border-color:var(--pl);border-style:solid;color:var(--pd)}
+.sl.active{border-color:var(--pl);border-style:solid;color:var(--p)}
+/* SEL TABS */
+.stabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:14px}
+.stab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:600;border:0;background:none;cursor:pointer;border-radius:8px;color:var(--t3)}
+.stab.on{background:var(--card);color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.si{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--bd);font-size:14px;font-family:inherit;background:var(--card);margin-bottom:12px}
+.si:focus{outline:none;border-color:var(--pl)}
+/* ING */
+.sa{padding:16px}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ic{padding:14px;background:var(--card);border:1.5px solid var(--bd);border-radius:12px;cursor:pointer;text-align:left}
+.ic:active{transform:scale(.97)}.ic.used{opacity:.3;pointer-events:none}
+.inm{font-size:13px;font-weight:600}
+/* PROD */
+.pl{display:flex;flex-direction:column;gap:8px}
+.prcd{display:flex;align-items:flex-start;gap:12px;padding:13px;background:var(--card);border:1.5px solid var(--bd);border-radius:12px;cursor:pointer}
+.prcd:active{transform:scale(.99)}
+.pri{width:40px;height:40px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.prf{flex:1;min-width:0}
+.prn{font-size:13px;font-weight:600;margin-bottom:3px}
+.prc{font-size:11px;color:var(--t3);margin-bottom:6px}
+.pri2{display:flex;flex-wrap:wrap;gap:4px}
+.ch{font-size:10px;padding:2px 7px;background:var(--bg);color:var(--t2);border-radius:999px}
+.ch.hl{background:rgba(216,90,48,.1);color:var(--red);font-weight:600}
+.pra{color:var(--pl);font-size:18px;flex-shrink:0}
+/* PAIRS */
+.pw{margin-top:20px;padding-top:16px;border-top:.5px dashed var(--bd)}
+.plb{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.prw{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--pb);border-radius:10px;margin-bottom:6px}
+.prk{width:22px;height:22px;border-radius:50%;background:var(--pl);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.prc2{flex:1;min-width:0}
+.png{font-size:11px;color:var(--p);font-weight:500;margin-bottom:2px}
+.ppn{font-size:13px;font-weight:600}
+.prm{background:none;border:0;color:var(--t3);font-size:16px;cursor:pointer}
+/* RESULT */
+.rh{background:linear-gradient(135deg,var(--pd),var(--p));color:white;padding:20px 16px 24px}
+.rcs{font-size:13px;opacity:.85;margin-bottom:4px}
+.rt{font-size:22px;font-weight:700;margin-bottom:14px}
+.mp{background:rgba(255,255,255,.12);border-radius:12px;padding:12px}
+.mpl{font-size:11px;opacity:.85;margin-bottom:8px}
+.mpi{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:5px}
+.mpi:last-child{margin-bottom:0}
+.mpk{width:18px;height:18px;border-radius:50%;background:white;color:var(--p);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.rs{padding:16px}
+.rst{font-size:16px;font-weight:700;margin-bottom:12px}
+.rl{display:flex;flex-direction:column;gap:8px}
+.rc{display:flex;align-items:center;gap:12px;padding:13px;background:var(--card);border-radius:12px;border:.5px solid var(--bd)}
+.rc.mine{border-color:var(--pl);background:linear-gradient(to right,var(--pb),white)}
+.rn2{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.r1{background:var(--ab);color:var(--ac)}.r2{background:var(--pb);color:var(--p)}.r3{background:#E6F1FB;color:#378ADD}.rn3{background:var(--bg);color:var(--t3)}
+.rpn{font-size:13px;font-weight:600;margin-bottom:2px;display:flex;align-items:center;gap:4px}
+.rpm{font-size:11px;color:var(--t3)}
+.you{font-size:9px;padding:1px 5px;background:var(--pl);color:white;border-radius:4px;font-weight:600}
+.rr{text-align:right;flex-shrink:0}
+.pcn{font-size:14px;font-weight:700}
+.pcb{width:60px;height:4px;background:var(--bd);border-radius:2px;overflow:hidden;margin-top:4px}
+.pcf{height:100%;background:var(--pl);border-radius:2px}
+/* RANKING */
+.rp{padding:16px}
+.seg{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:16px}
+.segtab{flex:1;padding:9px;text-align:center;font-size:12px;font-weight:600;border:0;background:none;cursor:pointer;border-radius:9px;color:var(--t2)}
+.segtab.on{background:var(--card);color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ri{display:flex;align-items:center;gap:12px;padding:13px;background:var(--card);border-radius:12px;border:.5px solid var(--bd);margin-bottom:8px;cursor:pointer}
+.rin{flex:1;min-width:0}
+.rinm{font-size:13px;font-weight:600;margin-bottom:2px}
+.ris{font-size:11px;color:var(--t3)}
+.rir{text-align:right;flex-shrink:0}
+.cb{padding:14px;background:var(--card);border-radius:12px;border:.5px solid var(--bd);margin-bottom:8px}
+.cch{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.cc2{padding:5px 12px;background:var(--pb);color:var(--p);border-radius:999px;font-size:12px;font-weight:600}
+.cm2{font-size:11px;color:var(--t3)}
+/* PURI POPUP */
+.puriTip{display:none;background:var(--pd);color:white;border-radius:14px;padding:14px 16px;margin-top:10px;margin-bottom:4px;font-size:12px;line-height:1.8}
+/* PROD POPUP */
+.popup-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center}
+.popup{background:white;width:100%;max-width:420px;border-radius:20px 20px 0 0;padding:24px 20px 36px;animation:slideUp .25s}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+/* MY */
+.mh{background:linear-gradient(135deg,var(--pd),var(--p));color:white;padding:24px 16px 28px}
+.mn{font-size:22px;font-weight:700;margin-bottom:4px}
+.ms{font-size:13px;opacity:.85}
+.mst{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
+.mstb{background:rgba(255,255,255,.15);border-radius:10px;padding:12px 8px;text-align:center}
+.msn{font-size:22px;font-weight:700;margin-bottom:2px}
+.msl{font-size:10px;opacity:.85}
+.msec{padding:16px}
+.msect{font-size:15px;font-weight:700;margin-bottom:12px}
+.hcd{background:var(--card);border-radius:12px;padding:13px;border:.5px solid var(--bd);margin-bottom:8px}
+.ht{display:flex;justify-content:space-between;margin-bottom:8px}
+.hcs{font-size:13px;font-weight:600}
+.hd{font-size:11px;color:var(--t3)}
+.hm{padding-top:8px;border-top:.5px solid var(--bd);font-size:11px;color:var(--t2);display:flex;align-items:center;gap:4px}
+.hmr{font-weight:700;color:var(--p)}
+/* UTIL */
+.bw{padding:16px}
+.empty{text-align:center;padding:40px 20px;color:var(--t3);font-size:14px;line-height:1.7}
+.nc{margin:16px;padding:18px;background:linear-gradient(135deg,var(--pb),#C9E8DA);border-radius:16px;text-align:center}
+.nct{font-size:14px;font-weight:600;color:var(--pd);margin-bottom:6px}
+.ncs{font-size:12px;color:var(--p);margin-bottom:14px}
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:white;padding:0;height:0;overflow:hidden;border-radius:999px;font-size:13px;z-index:1000;transition:all .3s;white-space:nowrap;opacity:0}
+.toast.show{padding:11px 18px;height:auto;opacity:1}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="screen on" id="loginScreen">
+<div class="lw">
+  <div class="ll"><h1>더나음</h1><p>Better Choices, Better Health</p></div>
+  <div class="lc">
+    <div class="ltabs">
+      <button class="ltab on" onclick="switchLTab('login',this)">로그인</button>
+      <button class="ltab" onclick="switchLTab('signup',this)">회원가입</button>
+    </div>
+    <div id="lf">
+      <div class="err" id="lerr"></div>
+      <input class="inp" id="lnick" placeholder="닉네임">
+      <input class="inp" id="lpw" type="password" placeholder="비밀번호 4자리" maxlength="4" inputmode="numeric">
+      <button class="btn" onclick="doLogin()">로그인</button>
+    </div>
+    <div id="sf" style="display:none">
+      <div class="err" id="serr"></div>
+      <input class="inp" id="snick" placeholder="닉네임 (최대 20자)" maxlength="20">
+      <p class="hint">다른 사람과 겹치지 않는 닉네임을 입력해주세요</p>
+      <input class="inp" id="spw" type="password" placeholder="비밀번호 4자리 숫자" maxlength="4" inputmode="numeric">
+      <input class="inp" id="spw2" type="password" placeholder="비밀번호 확인" maxlength="4" inputmode="numeric">
+      <button class="btn" onclick="doSignup()">가입하기</button>
+    </div>
+  </div>
+  <div class="li">⚕️ 약사 전용 임상 판단 플랫폼<br>면허번호 인증은 추후 도입 예정입니다</div>
+</div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="home">
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="logo">더나음</div>
+    <div class="logo-sub">Better Choices, Better Health</div>
+  </div>
+</div>
+<div class="hw">
+  <div class="st">오늘의 케이스</div>
+  <div class="ss">약사 선생님의 임상 판단을 공유해주세요</div>
+  <div id="caseList"></div>
+</div>
+<div class="tabbar">
+  <button class="tab on" onclick="goTab('home')"><div class="tab-icon">📋</div>케이스</button>
+  <button class="tab" onclick="goTab('ranking')"><div class="tab-icon">📊</div>랭킹</button>
+  <button class="tab" onclick="goTab('mypage')"><div class="tab-icon">👤</div>MY</button>
+</div>
+</div>
+
+<!-- CASE -->
+<div class="screen" id="caseScreen">
+<div class="vw" id="vwrap">
+  <div class="vbg" id="vbg">👤</div>
+  <div class="vov"></div>
+  <div class="vtag"><span class="dot"></span>AI 케이스</div>
+</div>
+<div class="pc" id="pcard"></div>
+<div class="bw" style="display:flex;gap:8px">
+  <button class="btn-sm btn-out" style="flex:0 0 80px" onclick="goTab('home')">← 뒤로</button>
+  <button class="btn-sm" style="flex:1" onclick="goStep('ing')">성분 선택하기 →</button>
+</div>
+</div>
+
+<!-- ING SELECT -->
+<div class="screen" id="ingScreen">
+<div class="sh">
+  <div class="sp"><div class="sd done"></div><div class="sd active"></div><div class="sd"></div><div class="sd"></div></div>
+  <div class="stt" id="ingTitle">1순위 성분을 선택해주세요</div>
+  <div class="sts">성분으로 찾거나 제품을 직접 검색하세요</div>
+  <div class="slr">
+    <div class="sl active" id="sl0">1순위</div>
+    <div class="sl" id="sl1">2순위</div>
+    <div class="sl" id="sl2">3순위</div>
+  </div>
+</div>
+<div class="sa">
+  <div class="stabs">
+    <button class="stab on" id="tabI" onclick="switchSelTab('ing')">성분으로 찾기</button>
+    <button class="stab" id="tabS" onclick="switchSelTab('search')">제품 검색</button>
+  </div>
+  <div id="ingCont"><div class="ig" id="igrid"></div></div>
+  <div id="searchCont" style="display:none">
+    <input class="si" id="sinput" placeholder="제품명·성분·제조사 검색" oninput="doSearch()">
+    <div class="pl" id="sresults"></div>
+  </div>
+  <div id="ipairs"></div>
+</div>
+</div>
+
+<!-- PROD SELECT -->
+<div class="screen" id="prodScreen">
+<div class="sh">
+  <div class="sp"><div class="sd done"></div><div class="sd done"></div><div class="sd active"></div><div class="sd"></div></div>
+  <div class="stt" id="ptitle">제품을 선택해주세요</div>
+  <div class="sts" id="psub"></div>
+</div>
+<div class="sa">
+  <div class="pl" id="plist2"></div>
+  <div id="ppairs"></div>
+</div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="resultScreen">
+<div class="rh">
+  <div class="rcs" id="rcase"></div>
+  <div class="rt">약사 추천 결과</div>
+  <div class="mp"><div class="mpl">내 추천</div><div id="mpicks"></div></div>
+</div>
+<div class="rs">
+  <div class="rst">제품 선택 빈도 순위</div>
+  <div class="rl" id="rlist"></div>
+</div>
+<div class="nc">
+  <div class="nct">🎯 다음 케이스도 풀어보세요</div>
+  <div class="ncs">더 많은 약사가 참여할수록 PURI가 정교해져요</div>
+  <button class="btn" onclick="goTab('home')">홈으로 돌아가기</button>
+</div>
+</div>
+
+<!-- RANKING -->
+<div class="screen" id="ranking">
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="logo">더나음</div>
+    <div class="logo-sub">Better Choices, Better Health</div>
+  </div>
+</div>
+<div class="rp">
+  <div class="st">랭킹</div>
+  <div class="ss" style="display:flex;align-items:center;gap:6px">
+    PURI 기반 신뢰도 지수
+    <button onclick="togglePuri()" style="width:18px;height:18px;border-radius:50%;background:var(--t3);color:white;border:0;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0">?</button>
+  </div>
+  <div class="puriTip" id="puriTip">
+    <div style="font-weight:700;margin-bottom:6px;font-size:13px">PURI란?</div>
+    <div><strong>Pharmacist Unbiased Reliability Index</strong></div>
+    <div style="margin-top:8px;color:rgba(255,255,255,.9)">전국 약사들이 실제 환자 케이스를 보고 내린 임상 판단을 집계하고, 검증된 학술 데이터를 더하여 더나음이 자체 개발한 신뢰도 지수입니다.<br><br>어떤 광고나 외부 개입 없이 약사의 임상 판단과 학술적 근거가 결합되며, 참여 약사가 늘고 케이스가 쌓일수록 더 정교하고 신뢰도 높은 지수로 발전합니다.<br><br>더나음의 PURI는 약사 집단의 집단지성이 만들어가는 OTC·건기식 시장의 표준 신뢰도 지표를 목표로 합니다.</div>
+  </div>
+  <div class="seg">
+    <button class="segtab on" onclick="switchRTab('product',this)">제품</button>
+    <button class="segtab" onclick="switchRTab('ingredient',this)">성분</button>
+    <button class="segtab" onclick="switchRTab('combo',this)">조합</button>
+  </div>
+  <div id="rcontent"></div>
+</div>
+<div class="tabbar">
+  <button class="tab" onclick="goTab('home')"><div class="tab-icon">📋</div>케이스</button>
+  <button class="tab on" onclick="goTab('ranking')"><div class="tab-icon">📊</div>랭킹</button>
+  <button class="tab" onclick="goTab('mypage')"><div class="tab-icon">👤</div>MY</button>
+</div>
+</div>
+
+<!-- MY -->
+<div class="screen" id="mypage">
+<div class="mh">
+  <div class="mn" id="mynm">약사님</div>
+  <div class="ms">더나음과 함께해주셔서 감사해요</div>
+  <div class="mst">
+    <div class="mstb"><div class="msn" id="sc">0</div><div class="msl">케이스</div></div>
+    <div class="mstb"><div class="msn" id="sp2">0</div><div class="msl">추천 제품</div></div>
+    <div class="mstb"><div class="msn" id="sm">-</div><div class="msl">평균 일치율</div></div>
+  </div>
+</div>
+<div class="msec">
+  <div class="msect">내 추천 히스토리</div>
+  <div id="hlist"></div>
+</div>
+<div class="tabbar">
+  <button class="tab" onclick="goTab('home')"><div class="tab-icon">📋</div>케이스</button>
+  <button class="tab" onclick="goTab('ranking')"><div class="tab-icon">📊</div>랭킹</button>
+  <button class="tab on" onclick="goTab('mypage')"><div class="tab-icon">👤</div>MY</button>
+</div>
+</div>
+
+<!-- PROD POPUP -->
+<div id="popBg" class="popup-bg" onclick="closePop()">
+<div class="popup" onclick="event.stopPropagation()">
+  <div style="width:36px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 20px"></div>
+  <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:20px">
+    <div id="popImg" style="width:80px;height:80px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;border:.5px solid var(--bd)"></div>
+    <div style="flex:1;min-width:0">
+      <div id="popName" style="font-size:17px;font-weight:700;margin-bottom:4px"></div>
+      <div id="popCo" style="font-size:12px;color:var(--t3);margin-bottom:10px"></div>
+      <div id="popPuri" style="display:inline-flex;align-items:center;background:var(--pb);padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700;color:var(--p)"></div>
+    </div>
+  </div>
+  <div style="height:.5px;background:var(--bd);margin-bottom:16px"></div>
+  <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">성분 구성</div>
+  <div id="popIngs"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyDB_PFZnR_eNp9rH4Pd9avnLNDef6DlUQ8",
+  authDomain:"deonaeum-abcab.firebaseapp.com",
+  projectId:"deonaeum-abcab",
+  storageBucket:"deonaeum-abcab.firebasestorage.app",
+  messagingSenderId:"660777673752",
+  appId:"1:660777673752:web:48d7475f16f71a2b1bcf6d"
+});
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+/* ══ DATA ══ */
+let P=[], C=[];
+
+async function loadData(){
+  try{
+    const ps = await db.collection('products').get();
+    P=[];
+    ps.forEach(d=>{
+      const x=d.data();
+      const ings=(x.ingredients||[]).map(i=>typeof i==='string'?i:i.name||i);
+      P.push({id:d.id,c:x.company||'J&H Bio',n:x.name,e:x.emoji||'💊',i:ings});
+    });
+  }catch(e){console.log('제품 로드 실패',e);}
+  try{
+    const cs = await db.collection('cases').get();
+    C=[];
+    cs.forEach(d=>{
+      const x=d.data();
+      C.push({id:d.id,title:x.title||'',tag:(x.tags||[]).join('·'),e:x.emoji||'👤',lv:x.level||1,respondents:x.respondents||0,videoUrl:x.videoUrl||'',pt:x.patient||{},ings:x.ingredients||[]});
+    });
+    C.sort((a,b)=>a.id.localeCompare(b.id));
+  }catch(e){console.log('케이스 로드 실패',e);}
+}
+
+/* ══ STATE ══ */
+let S={user:null,case:null,pair:0,pairs:[],ing:null,hist:[],selTab:'ing',shownIngs:[]};
+
+/* ══ LOGIN ══ */
+function switchLTab(t,btn){
+  document.querySelectorAll('.ltab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('lf').style.display=t==='login'?'block':'none';
+  document.getElementById('sf').style.display=t==='signup'?'block':'none';
+}
+
+function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
+
+async function doSignup(){
+  const nick=document.getElementById('snick').value.trim();
+  const pw=document.getElementById('spw').value;
+  const pw2=document.getElementById('spw2').value;
+  document.getElementById('serr').style.display='none';
+  if(!nick){showErr('serr','닉네임을 입력해주세요');return;}
+  if(pw.length!==4||!/^\d+$/.test(pw)){showErr('serr','비밀번호는 숫자 4자리예요');return;}
+  if(pw!==pw2){showErr('serr','비밀번호가 일치하지 않아요');return;}
+  try{
+    const r=await db.collection('users').doc(nick).get();
+    if(r.exists()){showErr('serr','이미 사용 중인 닉네임이에요');return;}
+    await db.collection('users').doc(nick).set({pw,hist:[],createdAt:new Date().toISOString()});
+    toast('가입 완료! 로그인해주세요');
+    switchLTab('login',document.querySelectorAll('.ltab')[0]);
+  }catch(e){showErr('serr','오류가 발생했어요: '+e.message);}
+}
+
+async function doLogin(){
+  const nick=document.getElementById('lnick').value.trim();
+  const pw=document.getElementById('lpw').value;
+  document.getElementById('lerr').style.display='none';
+  if(!nick){showErr('lerr','닉네임을 입력해주세요');return;}
+  if(!pw){showErr('lerr','비밀번호를 입력해주세요');return;}
+  try{
+    const r=await db.collection('users').doc(nick).get();
+    if(!r.exists()){showErr('lerr','존재하지 않는 닉네임이에요');return;}
+    const d=r.data();
+    if(d.pw!==pw){showErr('lerr','비밀번호가 틀렸어요');return;}
+    S.user={nick};
+    S.hist=d.hist||[];
+    toast('안녕하세요, '+nick+'님!');
+    await loadData();
+    goTab('home');
+  }catch(e){showErr('lerr','오류가 발생했어요: '+e.message);}
+}
+
+/* ══ NAV ══ */
+function gs(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);}
+function goTab(t){
+  if(t==='home'){renderHome();gs('home');}
+  else if(t==='ranking'){renderRanking('product');gs('ranking');}
+  else if(t==='mypage'){renderMy();gs('mypage');}
+}
+function goStep(t){
+  if(t==='ing'){renderIngs();gs('ingScreen');}
+  else if(t==='prod'){renderProds();gs('prodScreen');}
+  else if(t==='result'){renderResult();gs('resultScreen');}
+}
+
+/* ══ HOME ══ */
+function renderHome(){
+  const done=S.hist.map(h=>h.caseId);
+  if(!C.length){
+    document.getElementById('caseList').innerHTML='<div class="empty">케이스를 불러오는 중...</div>';
+    return;
+  }
+  document.getElementById('caseList').innerHTML=C.map(c=>`
+    <div class="cc" onclick="startCase('${c.id}')">
+      <div class="ct">
+        ${c.videoUrl?`<video src="${c.videoUrl}#t=0.001" preload="metadata" muted playsinline></video>`:`<div class="tbg">${c.e}</div>`}
+        <div class="tov"></div>
+        <div class="ttag">LEVEL ${c.lv}</div>
+        <div class="tplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="ci">
+        <div class="cit">케이스 #${c.id} · ${c.title}</div>
+        <div class="cm">
+          <span class="tsm">${c.tag||'케이스'}</span>
+          ${done.includes(c.id)?'<span class="tdone">✓ 참여완료</span>':'<span>첫 응답자가 되어보세요</span>'}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ══ CASE ══ */
+function startCase(id){
+  const c=C.find(x=>x.id===id);
+  if(!c) return;
+  S.case=c;S.pair=0;S.pairs=[];S.ing=null;S.shownIngs=[];
+  const vw=document.getElementById('vwrap');
+  if(c.videoUrl){
+    vw.innerHTML=`<video src="${c.videoUrl}" autoplay muted controls playsinline style="width:100%;height:100%;object-fit:cover"></video><div class="vtag"><span class="dot"></span>AI 케이스</div>`;
+  }else{
+    vw.innerHTML=`<div class="vbg">${c.e}</div><div class="vov"></div><div class="vtag"><span class="dot"></span>AI 케이스</div>`;
+  }
+  const pt=c.pt||{};
+  document.getElementById('pcard').innerHTML=`
+    <div class="pn">${pt.name||''}</div>
+    <div class="ir"><span class="il">복용약</span><span>${pt.medication||''}</span></div>
+    <div class="ir"><span class="il">병력</span><span>${pt.history||''}</span></div>
+    <div class="ir"><span class="il">생활</span><span>${pt.lifestyle||''}</span></div>
+    <div class="ir"><span class="il">호소</span><span>${pt.complaint||''}</span></div>`;
+  gs('caseScreen');
+}
+
+/* ══ ING ══ */
+function getAllIngs(){const a=new Set();P.forEach(p=>p.i.forEach(x=>a.add(x)));return[...a];}
+function buildIngPool(){
+  const used=S.pairs.map(p=>p.ing);
+  const all=getAllIngs().filter(x=>!used.includes(x));
+  return all.sort(()=>Math.random()-.5).slice(0,8);
+}
+function switchSelTab(t){
+  S.selTab=t;
+  document.getElementById('tabI').classList.toggle('on',t==='ing');
+  document.getElementById('tabS').classList.toggle('on',t==='search');
+  document.getElementById('ingCont').style.display=t==='ing'?'block':'none';
+  document.getElementById('searchCont').style.display=t==='search'?'block':'none';
+  if(t==='search'){document.getElementById('sinput').value='';document.getElementById('sresults').innerHTML='';}
+}
+function renderIngs(){
+  const used=S.pairs.map(p=>p.ing);
+  document.getElementById('ingTitle').textContent=`${S.pair+1}순위 성분을 선택해주세요`;
+  for(let i=0;i<3;i++){
+    const e=document.getElementById('sl'+i);e.className='sl';
+    if(S.pairs[i]){e.classList.add('done');e.textContent=`${i+1}순위 ✓`;}
+    else if(i===S.pair){e.classList.add('active');e.textContent=`${i+1}순위`;}
+    else e.textContent=`${i+1}순위`;
+  }
+  if(!S.shownIngs.length) S.shownIngs=buildIngPool();
+  document.getElementById('igrid').innerHTML=S.shownIngs.map((ing,idx)=>`
+    <button class="ic ${used.includes(ing)?'used':''}" onclick="selIng('${ing}',${idx})">
+      <div class="inm">${ing}</div>
+    </button>`).join('');
+  renderPairs('ipairs');
+  switchSelTab(S.selTab);
+}
+function selIng(ing,idx){
+  S.ing=ing;
+  toast(`"${ing}" 선택`);
+  const used=[...S.pairs.map(p=>p.ing),ing];
+  const all=getAllIngs().filter(x=>!used.includes(x)&&!S.shownIngs.includes(x));
+  if(all.length>0) S.shownIngs[idx]=all[Math.floor(Math.random()*all.length)];
+  else S.shownIngs.splice(idx,1);
+  setTimeout(()=>goStep('prod'),250);
+}
+
+/* ══ SEARCH ══ */
+function doSearch(){
+  const q=document.getElementById('sinput').value.trim().toLowerCase();
+  const r=document.getElementById('sresults');
+  if(!q){r.innerHTML='';return;}
+  const nr=s=>s.toLowerCase().replace(/\s/g,'');
+  const qn=nr(q);
+  const m=P.filter(p=>nr(p.n).includes(qn)||nr(p.c).includes(qn)||p.i.some(x=>nr(x).includes(qn)));
+  if(!m.length){r.innerHTML='<div class="empty">검색 결과가 없어요</div>';return;}
+  r.innerHTML=m.map(p=>`
+    <div class="prcd" onclick="selProdDirect('${p.id}')">
+      <div class="pri">${p.e}</div>
+      <div class="prf"><div class="prn">${p.n}</div><div class="prc">${p.c}</div>
+        <div class="pri2">${p.i.slice(0,4).map(x=>`<span class="ch">${x}</span>`).join('')}${p.i.length>4?`<span class="ch">+${p.i.length-4}</span>`:''}</div>
+      </div><div class="pra">→</div>
+    </div>`).join('');
+}
+function selProdDirect(id){const p=P.find(x=>x.id===id);if(!p)return;S.ing=p.i[0]||'기타';selProd(id);}
+
+/* ══ PRODS ══ */
+function renderProds(){
+  const ing=S.ing;
+  document.getElementById('ptitle').textContent=`${S.pair+1}순위 제품을 선택해주세요`;
+  document.getElementById('psub').innerHTML=`<strong style="color:var(--p)">"${ing}"</strong> 포함 제품 · 성분 순서 기준`;
+  const nr=s=>s.replace(/\s/g,'').toLowerCase();
+  const ingN=nr(ing);
+  const m=P.map(p=>({p,idx:p.i.findIndex(x=>nr(x).includes(ingN)||ingN.includes(nr(x)))})).filter(x=>x.idx>=0).sort((a,b)=>a.idx-b.idx).map(x=>x.p);
+  const list=m.length>0?m:[...P].sort(()=>Math.random()-.5);
+  document.getElementById('plist2').innerHTML=list.map(p=>`
+    <div class="prcd" onclick="selProd('${p.id}')">
+      <div class="pri">${p.e}</div>
+      <div class="prf"><div class="prn">${p.n}</div><div class="prc">${p.c}</div>
+        <div class="pri2">${p.i.slice(0,5).map(x=>{const hl=nr(x).includes(ingN)||ingN.includes(nr(x));return`<span class="ch ${hl?'hl':''}">${x}</span>`;}).join('')}${p.i.length>5?`<span class="ch">+${p.i.length-5}</span>`:''}</div>
+      </div><div class="pra">→</div>
+    </div>`).join('');
+  renderPairs('ppairs');
+}
+function selProd(id){
+  const p=P.find(x=>x.id===id);if(!p)return;
+  S.pairs.push({ing:S.ing,prod:p});
+  toast(`✓ ${S.pair+1}순위: ${p.n}`);
+  if(S.pairs.length<3){S.pair=S.pairs.length;S.ing=null;setTimeout(()=>goStep('ing'),400);}
+  else setTimeout(()=>{saveResp();goStep('result');},400);
+}
+
+/* ══ PAIRS ══ */
+function renderPairs(tid){
+  const w=document.getElementById(tid);
+  if(!w||!S.pairs.length){if(w)w.innerHTML='';return;}
+  w.innerHTML=`<div class="pw"><div class="plb">선택한 추천 (${S.pairs.length}/3)</div>${S.pairs.map((p,i)=>`
+    <div class="prw"><div class="prk">${i+1}</div>
+      <div class="prc2"><div class="png">${p.ing}</div><div class="ppn">${p.prod.n} · ${p.prod.c}</div></div>
+      <button class="prm" onclick="remPair(${i})">×</button>
+    </div>`).join('')}</div>`;
+}
+function remPair(idx){S.pairs.splice(idx,1);S.pair=S.pairs.length;S.ing=null;goStep('ing');}
+
+/* ══ SAVE ══ */
+async function saveResp(){
+  const entry={caseId:S.case.id,caseTitle:S.case.title,pairs:S.pairs.map(p=>({ing:p.ing,pid:p.prod.id,pnm:p.prod.n,top3:p.prod.i.slice(0,3)})),date:new Date().toLocaleDateString('ko-KR'),match:Math.floor(Math.random()*30)+60};
+  S.hist=S.hist.filter(h=>h.caseId!==S.case.id);S.hist.unshift(entry);
+  try{
+    await db.collection('users').doc(S.user.nick).set({hist:S.hist},{merge:true});
+    await db.collection('responses').add({caseId:S.case.id,nick:S.user.nick,pairs:entry.pairs,at:new Date().toISOString()});
+  }catch(e){console.log('저장 실패',e);}
+}
+
+/* ══ RESULT ══ */
+function renderResult(){
+  const c=S.case;
+  document.getElementById('rcase').textContent=`케이스 #${c.id} · ${c.title}`;
+  document.getElementById('mpicks').innerHTML=S.pairs.map((p,i)=>`
+    <div class="mpi"><div class="mpk">${i+1}</div><div><strong>${p.prod.n}</strong> <span style="opacity:.85">· ${p.ing}</span></div></div>`).join('');
+  const myIds=S.pairs.map(p=>p.prod.id);
+  const others=P.filter(p=>!myIds.includes(p.id)).sort(()=>Math.random()-.5).slice(0,4);
+  const ranked=[...S.pairs.map(p=>p.prod),...others].slice(0,7).map((p,i)=>({...p,pct:Math.max(5,42-i*6+Math.floor(Math.random()*5))}));
+  document.getElementById('rlist').innerHTML=ranked.map((p,i)=>{
+    const mine=myIds.includes(p.id),rk=i+1;
+    return`<div class="rc ${mine?'mine':''}">
+      <div class="rn2 ${rk<=3?'r'+rk:'rn3'}">${rk}</div>
+      <div style="flex:1;min-width:0"><div class="rpn">${p.n}${mine?'<span class="you">YOU</span>':''}</div><div class="rpm">${p.c}</div></div>
+      <div class="rr"><div class="pcn">${p.pct}%</div><div class="pcb"><div class="pcf" style="width:${p.pct*2.2}%"></div></div></div>
+    </div>`;}).join('');
+}
+
+/* ══ RANKING ══ */
+function togglePuri(){const t=document.getElementById('puriTip');t.style.display=t.style.display==='none'||!t.style.display?'block':'none';}
+function switchRTab(t,btn){document.querySelectorAll('.segtab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderRanking(t);}
+function renderRanking(t){
+  const w=document.getElementById('rcontent');
+  if(t==='product'){
+    const items=[...P].map((p,i)=>({...p,puri:Math.max(20,88-i*4+Math.floor(Math.random()*8))})).sort((a,b)=>b.puri-a.puri);
+    w.innerHTML=items.length?items.map((p,i)=>`
+      <div class="ri" onclick="openPop('${p.id}',${p.puri})">
+        <div class="rn2 ${i<3?'r'+(i+1):'rn3'}">${i+1}</div>
+        <div class="rin"><div class="rinm">${p.e} ${p.n}</div><div class="ris">${p.c}</div></div>
+        <div class="rir"><div style="font-size:15px;font-weight:700;color:var(--p)">PURI ${p.puri}</div><div style="font-size:10px;color:var(--t3)">›</div></div>
+      </div>`).join(''):'<div class="empty">제품 데이터가 없어요</div>';
+  }else if(t==='ingredient'){
+    const ic={};P.forEach(p=>p.i.slice(0,3).forEach(x=>{ic[x]=(ic[x]||0)+1;}));
+    const sorted=Object.entries(ic).sort((a,b)=>b[1]-a[1]).slice(0,15);
+    w.innerHTML=sorted.length?sorted.map(([nm,cnt],i)=>`
+      <div class="ri">
+        <div class="rn2 ${i<3?'r'+(i+1):'rn3'}">${i+1}</div>
+        <div class="rin"><div class="rinm">${nm}</div><div class="ris">${cnt}개 제품에 포함</div></div>
+        <div class="rir"><div style="font-size:13px;font-weight:700;color:var(--p)">${Math.max(20,85-i*5+Math.floor(Math.random()*5))}</div><div style="font-size:10px;color:var(--t3)">PURI</div></div>
+      </div>`).join(''):'<div class="empty">데이터가 없어요</div>';
+  }else{
+    const combos={};P.forEach(p=>{if(p.i.length>=2){const k=p.i.slice(0,2).join(' + ');combos[k]=(combos[k]||0)+1;}});
+    const sorted=Object.entries(combos).sort((a,b)=>b[1]-a[1]);
+    w.innerHTML=sorted.length?sorted.map(([combo,cnt],i)=>`
+      <div class="cb">
+        <div class="cch">${combo.split(' + ').map(c=>`<span class="cc2">${c}</span>`).join('<span style="color:var(--t3);font-size:12px;align-self:center">+</span>')}</div>
+        <div class="cm2">${cnt}개 제품에서 함께 사용 · PURI 조합 <strong style="color:var(--p)">${Math.max(30,80-i*8+Math.floor(Math.random()*6))}</strong></div>
+      </div>`).join(''):'<div class="empty">데이터가 없어요</div>';
+  }
+}
+
+/* ══ PROD POPUP ══ */
+function openPop(id,puri){
+  const p=P.find(x=>x.id===id);if(!p)return;
+  document.getElementById('popImg').textContent=p.e;
+  document.getElementById('popName').textContent=p.n;
+  document.getElementById('popCo').textContent=p.c;
+  document.getElementById('popPuri').textContent=`PURI ${puri}`;
+  document.getElementById('popIngs').innerHTML=p.i.map((ing,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:${i%2===0?'var(--bg)':'white'};border-radius:10px;margin-bottom:4px">
+      <div style="width:20px;height:20px;border-radius:50%;background:var(--pb);color:var(--p);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${i+1}</div>
+      <div style="font-size:13px">${ing}</div>
+    </div>`).join('');
+  const bg=document.getElementById('popBg');bg.style.display='flex';
+}
+function closePop(){document.getElementById('popBg').style.display='none';}
+
+/* ══ MY ══ */
+function renderMy(){
+  const nick=S.user?.nick||'약사';
+  document.getElementById('mynm').textContent=nick+' 님';
+  const tc=S.hist.length,tp=S.hist.reduce((a,h)=>a+h.pairs.length,0);
+  const am=tc>0?Math.round(S.hist.reduce((a,h)=>a+(h.match||0),0)/tc)+'%':'-';
+  document.getElementById('sc').textContent=tc;
+  document.getElementById('sp2').textContent=tp;
+  document.getElementById('sm').textContent=am;
+  const l=document.getElementById('hlist');
+  if(!S.hist.length){l.innerHTML='<div class="empty">아직 참여한 케이스가 없어요<br>케이스를 풀어보세요!</div>';return;}
+  l.innerHTML=S.hist.map(h=>`
+    <div class="hcd">
+      <div class="ht"><div class="hcs">케이스 #${h.caseId}</div><div class="hd">${h.date}</div></div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:8px">${h.caseTitle}</div>
+      ${h.pairs.map((p,i)=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);margin-bottom:4px"><div class="prk" style="width:16px;height:16px;font-size:9px">${i+1}</div><span>${p.pnm} · ${p.ing}</span></div>`).join('')}
+      <div class="hm">동료 약사 일치율 <span class="hmr">${h.match}%</span></div>
+    </div>`).join('');
+}
+
+/* ══ TOAST ══ */
+let tt=null;
+function toast(msg){
+  const e=document.getElementById('toast');
+  e.textContent=msg;e.classList.add('show');
+  if(tt)clearTimeout(tt);
+  tt=setTimeout(()=>{e.classList.remove('show');setTimeout(()=>{e.textContent='';},400);},2000);
+}
+</script>
+</body>
+</html>
