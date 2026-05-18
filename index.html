@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>더나음 — Better Choices, Better Health</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--p:#0F6E56;--pl:#1D9E75;--pb:#E1F5EE;--pd:#085041;--ac:#EF9F27;--ab:#FAEEDA;--bg:#F5F5F2;--card:#FFFFFF;--bd:#E0E0DD;--t:#1A1A1A;--t2:#6B6B6B;--t3:#9B9B9B;--red:#D85A30}
+body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard',sans-serif;background:var(--bg);color:var(--t);max-width:420px;margin:0 auto;min-height:100vh;-webkit-font-smoothing:antialiased}
+.screen{display:none;min-height:100vh;padding-bottom:72px}.screen.on{display:block}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--card);border-bottom:.5px solid var(--bd);position:sticky;top:0;z-index:100}
+.logo{font-size:18px;font-weight:700;color:var(--pd);letter-spacing:-.5px}
+.logo-sub{font-size:9px;color:var(--t3);letter-spacing:.3px;padding-top:2px}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;background:var(--card);border-top:.5px solid var(--bd);display:flex;z-index:90}
+.tab{flex:1;padding:10px 0 12px;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--t3);font-size:10px}
+.tab.on{color:var(--p)}.tab-icon{font-size:20px}
+.btn{width:100%;padding:14px;border-radius:12px;background:var(--pl);color:white;border:0;font-size:15px;font-weight:600;cursor:pointer}.btn:active{transform:scale(.98)}
+.btn-sm{padding:12px;border-radius:12px;background:var(--pl);color:white;border:0;font-size:14px;font-weight:600;cursor:pointer}
+.btn-out{background:var(--bg);color:var(--t2);border:1px solid var(--bd)}
+.empty{text-align:center;padding:40px 20px;color:var(--t3);font-size:14px;line-height:1.7}
+/* LOGIN */
+.lw{min-height:100vh;background:linear-gradient(180deg,#B8D5C7,#DAE8DD);display:flex;flex-direction:column;justify-content:center;padding:40px 28px}
+.ll{text-align:center;margin-bottom:50px}
+.ll h1{font-size:42px;font-weight:700;color:var(--pd);letter-spacing:-1.5px;margin-bottom:8px}
+.ll p{font-size:13px;color:var(--pd);opacity:.7}
+.lc{background:white;border-radius:20px;padding:28px 24px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.ltabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:20px}
+.ltab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:600;border:0;background:none;cursor:pointer;border-radius:8px;color:var(--t3)}
+.ltab.on{background:white;color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.inp{width:100%;padding:13px 16px;border-radius:12px;border:1px solid var(--bd);font-size:14px;margin-bottom:10px;background:#FAFAF8;font-family:inherit}
+.inp:focus{outline:none;border-color:var(--pl);background:white}
+.hint{font-size:11px;color:var(--t3);margin-bottom:10px;margin-top:-6px;padding-left:4px}
+.err{font-size:12px;color:var(--red);padding:8px 12px;background:#FFF0ED;border-radius:8px;margin-bottom:10px;display:none}
+.li{text-align:center;margin-top:20px;font-size:11px;color:var(--pd);opacity:.7;line-height:1.6}
+/* HOME */
+.hw{padding:16px}
+.st{font-size:22px;font-weight:700;margin-bottom:4px;letter-spacing:-.5px}
+.ss{font-size:13px;color:var(--t2);margin-bottom:20px}
+.cc{background:var(--card);border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.05);cursor:pointer;border:.5px solid var(--bd);transition:transform .15s}
+.cc:active{transform:scale(.99)}
+.ct{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;background:#111}
+.ct video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:80px;background:linear-gradient(135deg,#085041,#1D9E75)}
+.tov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.5) 100%)}
+.tplay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.tplay svg{width:20px;height:20px;fill:var(--pd);margin-left:3px}
+.ci{padding:14px}
+.cit{font-size:14px;font-weight:700;margin-bottom:6px}
+.cm{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--t3)}
+.tsm{background:var(--pb);color:var(--p);padding:3px 8px;border-radius:6px;font-size:10px;font-weight:600}
+.tdone{background:#E8F5E9;color:#2E7D32;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:600}
+/* CASE */
+.vw{width:100%;aspect-ratio:16/9;background:#000;position:relative;overflow:hidden}
+.vw video{width:100%;height:100%;object-fit:cover}
+.vbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:100px;background:linear-gradient(135deg,#085041,#1D9E75)}
+.vov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.4) 100%)}
+.vtag{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.5);color:white;font-size:11px;padding:4px 10px;border-radius:999px;backdrop-filter:blur(10px);display:flex;align-items:center;gap:6px}
+.dot{width:6px;height:6px;background:#FF4444;border-radius:50%;animation:blink 1.5s infinite}
+@keyframes blink{50%{opacity:.3}}
+.pc{background:var(--card);margin:-14px 16px 0;padding:16px;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.04);position:relative;z-index:2}
+.pn{font-size:16px;font-weight:700;margin-bottom:12px}
+.ir{display:flex;gap:10px;font-size:13px;margin-bottom:8px}.ir:last-child{margin-bottom:0}
+.il{color:var(--t3);min-width:52px;font-size:12px}
+.bw{padding:16px}
+.warn-box{background:#FFF8E8;border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#7A5000;line-height:1.6;border:1px solid #F0DFA0}
+/* STEP */
+.sh{padding:16px;background:var(--card);border-bottom:.5px solid var(--bd);position:sticky;top:0;z-index:50}
+.sp{display:flex;gap:4px;margin-bottom:12px}
+.sd{flex:1;height:3px;background:var(--bd);border-radius:2px}
+.sd.done,.sd.active{background:var(--pl)}
+.stt{font-size:17px;font-weight:700;margin-bottom:4px}
+.sts{font-size:12px;color:var(--t2)}
+.slr{display:flex;gap:6px;margin-top:12px}
+.sl{flex:1;padding:7px 8px;border-radius:10px;text-align:center;font-size:11px;font-weight:600;border:1.5px dashed var(--bd);color:var(--t3)}
+.sl.done{background:var(--pb);border-color:var(--pl);border-style:solid;color:var(--pd)}
+.sl.active{border-color:var(--pl);border-style:solid;color:var(--p)}
+.stabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:14px}
+.stab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:600;border:0;background:none;cursor:pointer;border-radius:8px;color:var(--t3)}
+.stab.on{background:var(--card);color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.si{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--bd);font-size:14px;font-family:inherit;background:var(--card);margin-bottom:12px}
+.si:focus{outline:none;border-color:var(--pl)}
+.sa{padding:16px}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ic{padding:14px;background:var(--card);border:1.5px solid var(--bd);border-radius:12px;cursor:pointer;text-align:left}
+.ic:active{transform:scale(.97)}.ic.used{opacity:.3;pointer-events:none}
+.inm{font-size:13px;font-weight:600}
+.pl{display:flex;flex-direction:column;gap:8px}
+.prcd{display:flex;align-items:flex-start;gap:12px;padding:13px;background:var(--card);border:1.5px solid var(--bd);border-radius:12px;cursor:pointer}
+.prcd:active{transform:scale(.99)}.prcd.used{opacity:.4;pointer-events:none}
+.prei{width:40px;height:40px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.prf{flex:1;min-width:0}
+.prn{font-size:13px;font-weight:600;margin-bottom:3px}
+.prc{font-size:11px;color:var(--t3);margin-bottom:6px}
+.pri2{display:flex;flex-wrap:wrap;gap:4px}
+.ch{font-size:10px;padding:2px 7px;background:var(--bg);color:var(--t2);border-radius:999px}
+.ch.hl{background:rgba(216,90,48,.1);color:var(--red);font-weight:600}
+.pra{color:var(--pl);font-size:18px;flex-shrink:0;align-self:center}
+.pw{margin-top:20px;padding-top:16px;border-top:.5px dashed var(--bd)}
+.plb{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.prw{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--pb);border-radius:10px;margin-bottom:6px}
+.prk{width:22px;height:22px;border-radius:50%;background:var(--pl);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.prc2{flex:1;min-width:0}.png{font-size:11px;color:var(--p);font-weight:500;margin-bottom:2px}.ppn{font-size:13px;font-weight:600}
+.prm{background:none;border:0;color:var(--t3);font-size:16px;cursor:pointer}
+/* RESULT */
+.rh{background:linear-gradient(135deg,var(--pd),var(--p));color:white;padding:20px 16px 24px}
+.rcs{font-size:13px;opacity:.85;margin-bottom:4px}
+.rt{font-size:22px;font-weight:700;margin-bottom:14px}
+.mp{background:rgba(255,255,255,.12);border-radius:12px;padding:12px}
+.mpl{font-size:11px;opacity:.85;margin-bottom:8px}
+.mpi{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:5px}.mpi:last-child{margin-bottom:0}
+.mpk{width:18px;height:18px;border-radius:50%;background:white;color:var(--p);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.rs{padding:16px}
+.rst{font-size:16px;font-weight:700;margin-bottom:12px}
+.rl{display:flex;flex-direction:column;gap:8px}
+.rc{display:flex;align-items:center;gap:12px;padding:13px;background:var(--card);border-radius:12px;border:.5px solid var(--bd);cursor:pointer}
+.rc:active{transform:scale(.99)}.rc.mine{border-color:var(--pl);background:linear-gradient(to right,var(--pb),white)}
+.rn2{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.r1{background:var(--ab);color:var(--ac)}.r2{background:var(--pb);color:var(--p)}.r3{background:#E6F1FB;color:#378ADD}.rn3{background:var(--bg);color:var(--t3)}
+.rpn{font-size:13px;font-weight:600;margin-bottom:2px;display:flex;align-items:center;gap:4px}
+.rpm{font-size:11px;color:var(--t3)}
+.you{font-size:9px;padding:1px 5px;background:var(--pl);color:white;border-radius:4px;font-weight:600}
+.rr{text-align:right;flex-shrink:0}
+.pcn{font-size:14px;font-weight:700}
+.pcb{width:60px;height:4px;background:var(--bd);border-radius:2px;overflow:hidden;margin-top:4px}
+.pcf{height:100%;background:var(--pl);border-radius:2px}
+/* COMMENT */
+.cmt-box{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;border:.5px solid var(--bd)}
+.cmt-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.cmt-nick{font-size:12px;font-weight:700;color:var(--pd)}
+.cmt-date{font-size:11px;color:var(--t3)}
+.cmt-text{font-size:13px;color:var(--t);line-height:1.6;margin-bottom:10px}
+.cmt-acts{display:flex;align-items:center;gap:10px}
+.vbtn{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--bd);border-radius:999px;padding:5px 12px;font-size:12px;cursor:pointer;font-weight:600;font-family:inherit}
+.vbtn.up.on{background:#E8F5E9;color:#2E7D32;border-color:#2E7D32}
+.vbtn.dn.on{background:#FFF0ED;color:var(--red);border-color:var(--red)}
+.cmt-area{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--bd);font-size:14px;font-family:inherit;resize:vertical;min-height:72px;background:#FAFAF8}
+.cmt-area:focus{outline:none;border-color:var(--pl);background:white}
+.cpt{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;border:1.5px solid var(--bd);background:var(--bg);color:var(--t2);cursor:pointer;white-space:nowrap}
+.cpt.on{background:var(--pb);border-color:var(--pl);color:var(--p)}
+/* RANKING */
+.rp{padding:16px}
+.seg{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:16px}
+.segtab{flex:1;padding:9px;text-align:center;font-size:12px;font-weight:600;border:0;background:none;cursor:pointer;border-radius:9px;color:var(--t2)}
+.segtab.on{background:var(--card);color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ri{display:flex;align-items:center;gap:12px;padding:13px;background:var(--card);border-radius:12px;border:.5px solid var(--bd);margin-bottom:8px;cursor:pointer}
+.ri:active{transform:scale(.99)}
+.rin{flex:1;min-width:0}
+.rinm{font-size:13px;font-weight:600;margin-bottom:2px;display:flex;align-items:center;gap:4px}
+.ris{font-size:11px;color:var(--t3)}
+.rir{text-align:right;flex-shrink:0}
+.sec-title{font-size:14px;font-weight:700;color:var(--t2);margin:16px 0 10px;padding-bottom:8px;border-bottom:.5px solid var(--bd)}
+/* POPUP */
+.popup-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center}
+.popup-bg.on{display:flex}
+.popup{background:white;width:100%;max-width:420px;border-radius:20px 20px 0 0;padding:20px 20px 36px;max-height:85vh;overflow-y:auto;animation:slideUp .25s}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.pop-handle{width:36px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 16px}
+.pop-title{font-size:16px;font-weight:700;margin-bottom:14px}
+/* MY */
+.mh{background:linear-gradient(135deg,var(--pd),var(--p));color:white;padding:24px 16px 28px}
+.mn{font-size:22px;font-weight:700;margin-bottom:4px}
+.ms{font-size:13px;opacity:.85}
+.mst{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
+.mstb{background:rgba(255,255,255,.15);border-radius:10px;padding:12px 8px;text-align:center}
+.msn{font-size:22px;font-weight:700;margin-bottom:2px}
+.msl{font-size:10px;opacity:.85}
+.msec{padding:16px}
+.msect{font-size:15px;font-weight:700;margin-bottom:12px}
+.hcd{background:var(--card);border-radius:12px;padding:13px;border:.5px solid var(--bd);margin-bottom:8px}
+.ht{display:flex;justify-content:space-between;margin-bottom:6px}
+.hcs{font-size:13px;font-weight:600}
+.hd{font-size:11px;color:var(--t3)}
+/* TOAST */
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:white;padding:0;height:0;overflow:hidden;border-radius:999px;font-size:13px;z-index:1000;transition:all .3s;white-space:nowrap;opacity:0}
+.toast.show{padding:11px 18px;height:auto;opacity:1}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="screen on" id="loginScreen">
+<div class="lw">
+  <div class="ll"><h1>더나음</h1><p>Better Choices, Better Health</p></div>
+  <div class="lc">
+    <div class="ltabs">
+      <button class="ltab on" onclick="switchLTab('login',this)">로그인</button>
+      <button class="ltab" onclick="switchLTab('signup',this)">회원가입</button>
+    </div>
+    <div id="lf">
+      <div class="err" id="lerr"></div>
+      <input class="inp" id="lnick" placeholder="닉네임">
+      <input class="inp" id="lpw" type="password" placeholder="비밀번호 4자리" maxlength="4" inputmode="numeric">
+      <button class="btn" onclick="doLogin()">로그인</button>
+    </div>
+    <div id="sf" style="display:none">
+      <div class="err" id="serr"></div>
+      <input class="inp" id="snick" placeholder="닉네임 (최대 20자)" maxlength="20">
+      <p class="hint">다른 사람과 겹치지 않는 닉네임을 입력해주세요</p>
+      <input class="inp" id="spw" type="password" placeholder="비밀번호 4자리 숫자" maxlength="4" inputmode="numeric">
+      <input class="inp" id="spw2" type="password" placeholder="비밀번호 확인" maxlength="4" inputmode="numeric">
+      <button class="btn" onclick="doSignup()">가입하기</button>
+    </div>
+  </div>
+  <div class="li">⚕️ 약사 전용 임상 판단 플랫폼<br>면허번호 인증은 추후 도입 예정입니다</div>
+</div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="home">
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="logo">더나음</div><div class="logo-sub">Better Choices, Better Health</div>
+  </div>
+</div>
+<div class="hw">
+  <div class="st">오늘의 케이스</div>
+  <div class="ss">약사 선생님의 임상 판단을 공유해주세요</div>
+  <div id="caseList"></div>
+</div>
+<div class="tabbar">
+  <button class="tab on" onclick="goTab('home')"><div class="tab-icon">📋</div>케이스</button>
+  <button class="tab" onclick="goTab('ranking')"><div class="tab-icon">📊</div>랭킹</button>
+  <button class="tab" onclick="goTab('mypage')"><div class="tab-icon">👤</div>MY</button>
+</div>
+</div>
+
+<!-- CASE -->
+<div class="screen" id="caseScreen">
+<div class="vw" id="vwrap">
+  <div class="vbg">👤</div><div class="vov"></div>
+  <div class="vtag"><span class="dot"></span>AI 케이스</div>
+</div>
+<div class="pc" id="pcard"></div>
+<div class="bw">
+  <div class="warn-box">⚠️ 정확한 집계를 위해 한 케이스에서의 제품 선택은 추후에 수정이 불가능합니다. 신중하게 선택해주세요.</div>
+  <div style="display:flex;gap:8px">
+    <button class="btn-sm btn-out" style="flex:0 0 80px" onclick="goTab('home')">← 뒤로</button>
+    <button class="btn-sm" style="flex:1" onclick="goStep('ing')">성분 선택하기 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ING SELECT -->
+<div class="screen" id="ingScreen">
+<div class="sh">
+  <div class="sp"><div class="sd done"></div><div class="sd active"></div><div class="sd"></div><div class="sd"></div></div>
+  <div class="stt" id="ingTitle">1순위 성분을 선택해주세요</div>
+  <div class="sts">성분으로 찾거나 제품을 직접 검색하세요</div>
+  <div class="slr">
+    <div class="sl active" id="sl0">1순위</div>
+    <div class="sl" id="sl1">2순위</div>
+    <div class="sl" id="sl2">3순위</div>
+  </div>
+</div>
+<div class="sa">
+  <div class="stabs">
+    <button class="stab on" id="tabI" onclick="switchSelTab('ing')">성분으로 찾기</button>
+    <button class="stab" id="tabS" onclick="switchSelTab('search')">제품 검색</button>
+  </div>
+  <div id="ingCont"><div class="ig" id="igrid"></div></div>
+  <div id="searchCont" style="display:none">
+    <input class="si" id="sinput" placeholder="제품명·성분·제조사 검색" oninput="doSearch()">
+    <div class="pl" id="sresults"></div>
+  </div>
+  <div id="ipairs"></div>
+</div>
+</div>
+
+<!-- PROD SELECT -->
+<div class="screen" id="prodScreen">
+<div class="sh">
+  <div class="sp"><div class="sd done"></div><div class="sd done"></div><div class="sd active"></div><div class="sd"></div></div>
+  <div class="stt" id="ptitle">제품을 선택해주세요</div>
+  <div class="sts" id="psub"></div>
+</div>
+<div class="sa">
+  <div class="pl" id="plist2"></div>
+  <div id="ppairs"></div>
+</div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="resultScreen">
+<div class="rh">
+  <div class="rcs" id="rcase"></div>
+  <div class="rt">약사 추천 결과</div>
+  <div class="mp"><div class="mpl">내 추천</div><div id="mpicks"></div></div>
+</div>
+<div class="rs">
+  <div class="rst">제품 선택 빈도 순위</div>
+  <div style="font-size:12px;color:var(--t2);margin-bottom:12px" id="respondentText"></div>
+  <div class="rl" id="rlist"></div>
+</div>
+<div class="rs" id="cmtWriteSection">
+  <div class="rst">💬 임상 소견 남기기 <span style="font-size:11px;font-weight:400;color:var(--t3)">(선택사항)</span></div>
+  <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap" id="cmtProdTabs"></div>
+  <textarea class="cmt-area" id="cmtInput" placeholder="이 제품에 대한 임상 소견을 남겨주세요..."></textarea>
+  <button class="btn" style="margin-top:8px" onclick="submitComment()">등록하기</button>
+</div>
+<div class="rs">
+  <div class="rst">📋 약사 코멘트 순위</div>
+  <div id="cmtList"></div>
+</div>
+<div style="padding:16px">
+  <div style="background:linear-gradient(135deg,var(--pb),#C9E8DA);border-radius:16px;text-align:center;padding:20px">
+    <div style="font-size:14px;font-weight:600;color:var(--pd);margin-bottom:6px">🎯 다음 케이스도 풀어보세요</div>
+    <div style="font-size:12px;color:var(--p);margin-bottom:14px">더 많은 약사가 참여할수록 추천율이 정교해져요</div>
+    <button class="btn" onclick="goTab('home')">홈으로 돌아가기</button>
+  </div>
+</div>
+</div>
+
+<!-- RANKING -->
+<div class="screen" id="ranking">
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="logo">더나음</div><div class="logo-sub">Better Choices, Better Health</div>
+  </div>
+</div>
+<div class="rp">
+  <div class="st">랭킹</div>
+  <div class="ss">약사 집단지성 추천율 기반</div>
+  <div class="seg">
+    <button class="segtab on" onclick="switchRTab('product',this)">제품</button>
+    <button class="segtab" onclick="switchRTab('ingredient',this)">성분·조합</button>
+    <button class="segtab" onclick="switchRTab('pharmacist',this)">약사</button>
+  </div>
+  <div id="rcontent"></div>
+</div>
+<div class="tabbar">
+  <button class="tab" onclick="goTab('home')"><div class="tab-icon">📋</div>케이스</button>
+  <button class="tab on" onclick="goTab('ranking')"><div class="tab-icon">📊</div>랭킹</button>
+  <button class="tab" onclick="goTab('mypage')"><div class="tab-icon">👤</div>MY</button>
+</div>
+</div>
+
+<!-- MY -->
+<div class="screen" id="mypage">
+<div class="mh">
+  <div class="mn" id="mynm">약사님</div>
+  <div class="ms">더나음과 함께해주셔서 감사해요</div>
+  <div class="mst">
+    <div class="mstb"><div class="msn" id="sc">0</div><div class="msl">케이스</div></div>
+    <div class="mstb"><div class="msn" id="sp2">0</div><div class="msl">추천 제품</div></div>
+    <div class="mstb"><div class="msn" id="sm">-</div><div class="msl">일치율</div></div>
+  </div>
+</div>
+<div class="msec">
+  <div class="msect">내 추천 히스토리</div>
+  <div id="hlist"></div>
+</div>
+<div class="tabbar">
+  <button class="tab" onclick="goTab('home')"><div class="tab-icon">📋</div>케이스</button>
+  <button class="tab" onclick="goTab('ranking')"><div class="tab-icon">📊</div>랭킹</button>
+  <button class="tab on" onclick="goTab('mypage')"><div class="tab-icon">👤</div>MY</button>
+</div>
+</div>
+
+<!-- POPUP -->
+<div id="popBg" class="popup-bg" onclick="closePop()">
+<div class="popup" onclick="event.stopPropagation()">
+  <div class="pop-handle"></div>
+  <div id="popContent"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyDB_PFZnR_eNp9rH4Pd9avnLNDef6DlUQ8",
+  authDomain:"deonaeum-abcab.firebaseapp.com",
+  projectId:"deonaeum-abcab",
+  storageBucket:"deonaeum-abcab.firebasestorage.app",
+  messagingSenderId:"660777673752",
+  appId:"1:660777673752:web:48d7475f16f71a2b1bcf6d"
+});
+const db=firebase.firestore();
+const storage=firebase.storage();
+
+let P=[],C=[],RESP_CACHE=null;
+
+async function loadData(){
+  try{
+    const ps=await db.collection('products').get();P=[];
+    ps.forEach(d=>{const x=d.data();const ings=(x.ingredients||[]).map(i=>typeof i==='string'?i:i.name||i);P.push({id:d.id,c:x.company||'',n:x.name,e:x.emoji||'💊',i:ings});});
+  }catch(e){console.log('제품',e);}
+  try{
+    const cs=await db.collection('cases').get();C=[];
+    cs.forEach(d=>{const x=d.data();C.push({id:d.id,title:x.title||'',tag:(x.tags||[]).join('·'),e:x.emoji||'👤',videoUrl:x.videoUrl||'',pt:x.patient||{}});});
+    C.sort((a,b)=>a.id.localeCompare(b.id));
+  }catch(e){console.log('케이스',e);}
+  try{RESP_CACHE=await db.collection('responses').get();}catch(e){}
+}
+
+let S={user:null,case:null,pair:0,pairs:[],ing:null,hist:[],selTab:'ing',shownIngs:[],cmtProd:null};
+
+/* LOGIN */
+function switchLTab(t,btn){
+  document.querySelectorAll('.ltab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  document.getElementById('lf').style.display=t==='login'?'block':'none';
+  document.getElementById('sf').style.display=t==='signup'?'block':'none';
+}
+function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
+
+async function doSignup(){
+  const nick=document.getElementById('snick').value.trim();
+  const pw=document.getElementById('spw').value;
+  const pw2=document.getElementById('spw2').value;
+  document.getElementById('serr').style.display='none';
+  if(!nick){showErr('serr','닉네임을 입력해주세요');return;}
+  if(pw.length!==4||!/^\d+$/.test(pw)){showErr('serr','비밀번호는 숫자 4자리예요');return;}
+  if(pw!==pw2){showErr('serr','비밀번호가 일치하지 않아요');return;}
+  try{
+    const r=await db.collection('users').doc(nick).get();
+    if(r.exists){showErr('serr','이미 사용 중인 닉네임이에요');return;}
+    await db.collection('users').doc(nick).set({pw,hist:[],createdAt:new Date().toISOString()});
+    toast('가입 완료! 로그인해주세요');
+    switchLTab('login',document.querySelectorAll('.ltab')[0]);
+  }catch(e){showErr('serr','오류: '+e.message);}
+}
+
+async function doLogin(){
+  const nick=document.getElementById('lnick').value.trim();
+  const pw=document.getElementById('lpw').value;
+  document.getElementById('lerr').style.display='none';
+  if(!nick){showErr('lerr','닉네임을 입력해주세요');return;}
+  if(!pw){showErr('lerr','비밀번호를 입력해주세요');return;}
+  try{
+    const r=await db.collection('users').doc(nick).get();
+    if(!r.exists){showErr('lerr','존재하지 않는 닉네임이에요');return;}
+    const d=r.data();
+    if(d.pw!==pw){showErr('lerr','비밀번호가 틀렸어요');return;}
+    S.user={nick};S.hist=d.hist||[];
+    toast('안녕하세요, '+nick+'님!');
+    await loadData();goTab('home');
+  }catch(e){showErr('lerr','오류: '+e.message);}
+}
+
+/* NAV */
+function gs(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);}
+function goTab(t){
+  if(t==='home'){renderHome();gs('home');}
+  else if(t==='ranking'){renderRanking('product');gs('ranking');}
+  else if(t==='mypage'){renderMy();gs('mypage');}
+}
+function goStep(t){
+  if(t==='ing'){renderIngs();gs('ingScreen');}
+  else if(t==='prod'){renderProds();gs('prodScreen');}
+  else if(t==='result'){renderResult();gs('resultScreen');}
+}
+
+/* HOME */
+function renderHome(){
+  const done=S.hist.map(h=>h.caseId);
+  if(!C.length){document.getElementById('caseList').innerHTML='<div class="empty">케이스를 불러오는 중...</div>';return;}
+  document.getElementById('caseList').innerHTML=C.map(c=>`
+    <div class="cc" onclick="startCase('${c.id}')">
+      <div class="ct">
+        ${c.videoUrl?`<video src="${c.videoUrl}#t=0.001" preload="metadata" muted playsinline></video>`:`<div class="tbg">${c.e}</div>`}
+        <div class="tov"></div>
+        <div class="tplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="ci">
+        <div class="cit">케이스 #${c.id} · ${c.title}</div>
+        <div class="cm">
+          <span class="tsm">${c.tag||'케이스'}</span>
+          ${done.includes(c.id)?'<span class="tdone">✓ 참여완료</span>':'<span>첫 응답자가 되어보세요</span>'}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* CASE */
+function startCase(id){
+  const c=C.find(x=>x.id===id);if(!c)return;
+  const done=S.hist.find(h=>h.caseId===id);
+  if(done){
+    S.case=c;
+    S.pairs=done.pairs.map(p=>({ing:p.ing,prod:P.find(x=>x.id===p.pid)||{id:p.pid,n:p.pnm,c:'',e:'💊',i:p.top3||[]}}));
+    toast('이미 참여한 케이스예요');renderResult();gs('resultScreen');return;
+  }
+  S.case=c;S.pair=0;S.pairs=[];S.ing=null;S.shownIngs=[];
+  const vw=document.getElementById('vwrap');
+  vw.innerHTML=c.videoUrl
+    ?`<video src="${c.videoUrl}" autoplay muted controls playsinline style="width:100%;height:100%;object-fit:cover"></video><div class="vtag"><span class="dot"></span>AI 케이스</div>`
+    :`<div class="vbg">${c.e}</div><div class="vov"></div><div class="vtag"><span class="dot"></span>AI 케이스</div>`;
+  const pt=c.pt||{};
+  document.getElementById('pcard').innerHTML=`
+    <div class="pn">${pt.name||''}</div>
+    <div class="ir"><span class="il">복용약</span><span>${pt.medication||''}</span></div>
+    <div class="ir"><span class="il">병력</span><span>${pt.history||''}</span></div>
+    <div class="ir"><span class="il">생활</span><span>${pt.lifestyle||''}</span></div>
+    <div class="ir"><span class="il">호소</span><span>${pt.complaint||''}</span></div>`;
+  gs('caseScreen');
+}
+
+/* ING */
+function getAllIngs(){const a=new Set();P.forEach(p=>p.i.forEach(x=>a.add(x)));return[...a];}
+function buildIngPool(){const used=S.pairs.map(p=>p.ing);return getAllIngs().filter(x=>!used.includes(x)).sort(()=>Math.random()-.5).slice(0,8);}
+function switchSelTab(t){
+  S.selTab=t;
+  document.getElementById('tabI').classList.toggle('on',t==='ing');
+  document.getElementById('tabS').classList.toggle('on',t==='search');
+  document.getElementById('ingCont').style.display=t==='ing'?'block':'none';
+  document.getElementById('searchCont').style.display=t==='search'?'block':'none';
+  if(t==='search'){document.getElementById('sinput').value='';document.getElementById('sresults').innerHTML='';}
+}
+function renderIngs(){
+  const used=S.pairs.map(p=>p.ing);
+  document.getElementById('ingTitle').textContent=`${S.pair+1}순위 성분을 선택해주세요`;
+  for(let i=0;i<3;i++){
+    const e=document.getElementById('sl'+i);e.className='sl';
+    if(S.pairs[i]){e.classList.add('done');e.textContent=`${i+1}순위 ✓`;}
+    else if(i===S.pair){e.classList.add('active');e.textContent=`${i+1}순위`;}
+    else e.textContent=`${i+1}순위`;
+  }
+  if(!S.shownIngs.length)S.shownIngs=buildIngPool();
+  document.getElementById('igrid').innerHTML=S.shownIngs.map((ing,idx)=>`
+    <button class="ic${used.includes(ing)?' used':''}" onclick="selIng('${ing}',${idx})"><div class="inm">${ing}</div></button>`).join('');
+  renderPairs('ipairs');switchSelTab(S.selTab);
+}
+function selIng(ing,idx){
+  S.ing=ing;toast(`"${ing}" 선택`);
+  const used=[...S.pairs.map(p=>p.ing),ing];
+  const all=getAllIngs().filter(x=>!used.includes(x)&&!S.shownIngs.includes(x));
+  if(all.length>0)S.shownIngs[idx]=all[Math.floor(Math.random()*all.length)];
+  else S.shownIngs.splice(idx,1);
+  setTimeout(()=>goStep('prod'),250);
+}
+
+/* SEARCH */
+function doSearch(){
+  const q=document.getElementById('sinput').value.trim().toLowerCase();
+  const r=document.getElementById('sresults');
+  if(!q){r.innerHTML='';return;}
+  const nr=s=>s.toLowerCase().replace(/\s/g,'');const qn=nr(q);
+  const m=P.filter(p=>nr(p.n).includes(qn)||nr(p.c).includes(qn)||p.i.some(x=>nr(x).includes(qn)));
+  if(!m.length){r.innerHTML='<div class="empty">검색 결과가 없어요</div>';return;}
+  const usedIds=S.pairs.map(p=>p.prod.id);
+  r.innerHTML=m.map(p=>{const isU=usedIds.includes(p.id);return`
+    <div class="prcd${isU?' used':''}" onclick="${isU?'toast(\'이미 선택한 제품이에요\')':'selProdDirect(\''+p.id+'\')'}">
+      <div class="prei">${p.e}</div>
+      <div class="prf"><div class="prn">${p.n}${isU?'<span style="font-size:10px;color:var(--t3);margin-left:4px">✓</span>':''}</div><div class="prc">${p.c}</div>
+        <div class="pri2">${p.i.slice(0,4).map(x=>`<span class="ch">${x}</span>`).join('')}${p.i.length>4?`<span class="ch">+${p.i.length-4}</span>`:''}</div>
+      </div><div class="pra">${isU?'✓':'→'}</div>
+    </div>`;}).join('');
+}
+function selProdDirect(id){const p=P.find(x=>x.id===id);if(!p)return;S.ing=p.i[0]||'기타';selProd(id);}
+
+/* PRODS */
+function renderProds(){
+  const ing=S.ing;
+  document.getElementById('ptitle').textContent=`${S.pair+1}순위 제품을 선택해주세요`;
+  document.getElementById('psub').innerHTML=`<strong style="color:var(--p)">"${ing}"</strong> 포함 제품`;
+  const nr=s=>s.replace(/\s/g,'').toLowerCase();const ingN=nr(ing);
+  const m=P.map(p=>({p,idx:p.i.findIndex(x=>nr(x).includes(ingN)||ingN.includes(nr(x)))})).filter(x=>x.idx>=0).sort((a,b)=>a.idx-b.idx).map(x=>x.p);
+  const list=m.length>0?m:[...P];
+  const usedIds=S.pairs.map(p=>p.prod.id);
+  document.getElementById('plist2').innerHTML=list.map(p=>{const isU=usedIds.includes(p.id);return`
+    <div class="prcd${isU?' used':''}" onclick="${isU?'toast(\'이미 선택한 제품이에요\')':'selProd(\''+p.id+'\')'}">
+      <div class="prei">${p.e}</div>
+      <div class="prf"><div class="prn">${p.n}${isU?'<span style="font-size:10px;color:var(--t3);margin-left:4px">✓ 선택됨</span>':''}</div><div class="prc">${p.c}</div>
+        <div class="pri2">${p.i.slice(0,5).map(x=>{const hl=nr(x).includes(ingN)||ingN.includes(nr(x));return`<span class="ch${hl?' hl':''}">${x}</span>`;}).join('')}${p.i.length>5?`<span class="ch">+${p.i.length-5}</span>`:''}</div>
+      </div><div class="pra">${isU?'✓':'→'}</div>
+    </div>`;}).join('');
+  renderPairs('ppairs');
+}
+function selProd(id){
+  const p=P.find(x=>x.id===id);if(!p)return;
+  S.pairs.push({ing:S.ing,prod:p});
+  toast(`✓ ${S.pair+1}순위: ${p.n}`);
+  if(S.pairs.length<3){S.pair=S.pairs.length;S.ing=null;setTimeout(()=>goStep('ing'),400);}
+  else setTimeout(()=>{saveResp();goStep('result');},400);
+}
+
+/* PAIRS */
+function renderPairs(tid){
+  const w=document.getElementById(tid);if(!w||!S.pairs.length){if(w)w.innerHTML='';return;}
+  w.innerHTML=`<div class="pw"><div class="plb">선택한 추천 (${S.pairs.length}/3)</div>${S.pairs.map((p,i)=>`
+    <div class="prw"><div class="prk">${i+1}</div>
+      <div class="prc2"><div class="png">${p.ing}</div><div class="ppn">${p.prod.n}</div></div>
+      <button class="prm" onclick="remPair(${i})">×</button>
+    </div>`).join('')}</div>`;
+}
+function remPair(idx){S.pairs.splice(idx,1);S.pair=S.pairs.length;S.ing=null;goStep('ing');}
+
+/* SAVE */
+async function saveResp(){
+  const entry={caseId:S.case.id,caseTitle:S.case.title,pairs:S.pairs.map(p=>({ing:p.ing,pid:p.prod.id,pnm:p.prod.n,top3:p.prod.i.slice(0,3)})),date:new Date().toLocaleDateString('ko-KR'),match:0};
+  S.hist=S.hist.filter(h=>h.caseId!==S.case.id);S.hist.unshift(entry);
+  try{
+    await db.collection('users').doc(S.user.nick).set({hist:S.hist},{merge:true});
+    await db.collection('responses').add({caseId:S.case.id,nick:S.user.nick,pairs:entry.pairs,at:new Date().toISOString()});
+    RESP_CACHE=null;
+  }catch(e){console.log('저장 실패',e);}
+}
+
+/* RESULT */
+async function renderResult(){
+  const c=S.case;
+  document.getElementById('rcase').textContent=`케이스 #${c.id} · ${c.title}`;
+  document.getElementById('mpicks').innerHTML=S.pairs.map((p,i)=>`
+    <div class="mpi"><div class="mpk">${i+1}</div><div><strong>${p.prod.n}</strong> <span style="opacity:.85">· ${p.ing}</span></div></div>`).join('');
+
+  // 코멘트 작성 탭
+  S.cmtProd=S.pairs[0]?.prod.id||null;
+  document.getElementById('cmtProdTabs').innerHTML=S.pairs.map((p,i)=>`
+    <button class="cpt${i===0?' on':''}" onclick="selectCmtProd('${p.prod.id}',this)">${p.prod.e} ${p.prod.n}</button>`).join('');
+  if(S.pairs[0])document.getElementById('cmtInput').placeholder=`${S.pairs[0].prod.n}에 대한 임상 소견을 남겨주세요...`;
+
+  // 추천 데이터
+  let prodCount={},total=0;
+  try{
+    if(!RESP_CACHE)RESP_CACHE=await db.collection('responses').get();
+    RESP_CACHE.forEach(d=>{
+      if(d.data().caseId!==c.id)return;total++;
+      (d.data().pairs||[]).forEach((p,idx)=>{const w=idx===0?3:idx===1?2:1;if(p.pid)prodCount[p.pid]=(prodCount[p.pid]||0)+w;});
+    });
+  }catch(e){}
+  const myIds=S.pairs.map(p=>p.prod.id);
+  const allIds=new Set([...myIds,...Object.keys(prodCount)]);
+  const maxW=Math.max(...Object.values(prodCount),1);
+  const ranked=[...allIds].map(id=>{
+    const p=P.find(x=>x.id===id)||{id,n:id,c:'',e:'💊',i:[]};
+    const w=prodCount[id]||0;
+    return{...p,pct:total>0?Math.round(w/maxW*100):(myIds.includes(id)?100:0),cnt:w};
+  }).sort((a,b)=>b.pct-a.pct);
+
+  document.getElementById('respondentText').textContent=total>0?`📊 ${total}명 약사 응답`:'📊 첫 응답자입니다';
+  document.getElementById('rlist').innerHTML=ranked.map((p,i)=>{
+    const mine=myIds.includes(p.id),rk=i+1;
+    return`<div class="rc${mine?' mine':''}" onclick="openProdComments('${p.id}','${p.n}','${p.e}')">
+      <div class="rn2 ${rk<=3?'r'+rk:'rn3'}">${rk}</div>
+      <div style="flex:1;min-width:0"><div class="rpn">${p.e} ${p.n}${mine?'<span class="you">YOU</span>':''}</div><div class="rpm">${p.c}</div></div>
+      <div class="rr"><div class="pcn">${p.pct}%</div><div class="pcb"><div class="pcf" style="width:${Math.min(p.pct,100)}%"></div></div><div style="font-size:9px;color:var(--t3);margin-top:2px">클릭 시 코멘트</div></div>
+    </div>`;}).join('');
+  loadCmtList(c.id);
+}
+
+function selectCmtProd(pid,btn){
+  S.cmtProd=pid;
+  document.querySelectorAll('.cpt').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  document.getElementById('cmtInput').value='';
+  const prod=P.find(x=>x.id===pid);
+  document.getElementById('cmtInput').placeholder=`${prod?.n||'제품'}에 대한 임상 소견을 남겨주세요...`;
+}
+
+/* COMMENTS */
+async function loadCmtList(caseId){
+  const w=document.getElementById('cmtList');
+  w.innerHTML='<div class="empty" style="padding:16px">로딩 중...</div>';
+  try{
+    const snap=await db.collection('comments').where('caseId','==',caseId).get();
+    const docs=[];snap.forEach(d=>docs.push({id:d.id,...d.data()}));
+    docs.sort((a,b)=>(b.score||0)-(a.score||0));
+    if(!docs.length){w.innerHTML='<div class="empty">아직 코멘트가 없어요<br>첫 소견을 남겨보세요!</div>';return;}
+    w.innerHTML=docs.map(d=>{
+      const myVote=d.votes?.[S.user?.nick]||0;
+      const prod=P.find(x=>x.id===d.prodId);
+      return`<div class="cmt-box">
+        <div class="cmt-top"><span class="cmt-nick">💊 ${d.nick}</span><span class="cmt-date">${d.date||''}</span></div>
+        ${prod?`<div style="font-size:11px;color:var(--p);font-weight:600;margin-bottom:6px">${prod.e} ${prod.n}</div>`:''}
+        <div class="cmt-text">${d.text}</div>
+        <div class="cmt-acts">
+          <button class="vbtn up${myVote===1?' on':''}" onclick="voteComment('${d.id}',1,'${caseId}')">👍 ${d.upvotes||0}</button>
+          <button class="vbtn dn${myVote===-1?' on':''}" onclick="voteComment('${d.id}',-1,'${caseId}')">👎 ${d.downvotes||0}</button>
+        </div>
+      </div>`;}).join('');
+  }catch(e){w.innerHTML='<div class="empty">불러오기 실패</div>';}
+}
+
+async function submitComment(){
+  const text=document.getElementById('cmtInput').value.trim();
+  if(!text){toast('소견을 입력해주세요');return;}
+  if(!S.user?.nick){toast('로그인이 필요해요');return;}
+  if(!S.cmtProd){toast('제품을 선택해주세요');return;}
+  try{
+    await db.collection('comments').add({
+      caseId:S.case.id,prodId:S.cmtProd,nick:S.user.nick,text,
+      upvotes:0,downvotes:0,score:0,votes:{},
+      date:new Date().toLocaleDateString('ko-KR'),createdAt:new Date().toISOString()
+    });
+    document.getElementById('cmtInput').value='';
+    toast('코멘트가 등록됐어요!');
+    loadCmtList(S.case.id);
+  }catch(e){toast('등록 실패: '+e.message);}
+}
+
+async function voteComment(id,val,caseId){
+  if(!S.user?.nick){toast('로그인이 필요해요');return;}
+  try{
+    const ref=db.collection('comments').doc(id);
+    const snap=await ref.get();if(!snap.exists)return;
+    const d=snap.data();const votes={...(d.votes||{})};const prev=votes[S.user.nick]||0;
+    if(prev===val){
+      votes[S.user.nick]=0;
+      const up=Math.max(0,val===1?(d.upvotes||0)-1:(d.upvotes||0));
+      const dn=Math.max(0,val===-1?(d.downvotes||0)-1:(d.downvotes||0));
+      await ref.update({votes,upvotes:up,downvotes:dn,score:up-dn});
+    }else{
+      const pu=prev===1?-1:0;const pd2=prev===-1?-1:0;
+      votes[S.user.nick]=val;
+      const up=Math.max(0,(d.upvotes||0)+pu+(val===1?1:0));
+      const dn=Math.max(0,(d.downvotes||0)+pd2+(val===-1?1:0));
+      await ref.update({votes,upvotes:up,downvotes:dn,score:up-dn});
+    }
+    loadCmtList(caseId);
+  }catch(e){toast('오류: '+e.message);}
+}
+
+/* PROD COMMENTS POPUP */
+async function openProdComments(prodId,prodName,prodEmoji){
+  const pc=document.getElementById('popContent');
+  pc.innerHTML=`<div class="pop-title">${prodEmoji||'💊'} ${prodName} 코멘트</div><div id="popCmtList"><div class="empty">로딩 중...</div></div>`;
+  document.getElementById('popBg').classList.add('on');
+  try{
+    const snap=await db.collection('comments').where('prodId','==',prodId).get();
+    const docs=[];snap.forEach(d=>docs.push({id:d.id,...d.data()}));
+    docs.sort((a,b)=>(b.score||0)-(a.score||0));
+    const w=document.getElementById('popCmtList');
+    if(!docs.length){w.innerHTML='<div class="empty">이 제품에 대한 코멘트가 없어요</div>';return;}
+    w.innerHTML=docs.map(d=>`
+      <div class="cmt-box">
+        <div class="cmt-top"><span class="cmt-nick">💊 ${d.nick}</span><span class="cmt-date">${d.date||''}</span></div>
+        <div class="cmt-text">${d.text}</div>
+        <div style="font-size:12px;color:var(--t3)">👍 ${d.upvotes||0} · 👎 ${d.downvotes||0}</div>
+      </div>`).join('');
+  }catch(e){document.getElementById('popCmtList').innerHTML='<div class="empty">불러오기 실패</div>';}
+}
+
+/* PHARMACIST POPUP */
+async function openPharmacist(nick){
+  const pc=document.getElementById('popContent');
+  pc.innerHTML=`<div class="pop-title">💊 ${nick}</div><div id="popPhCmts"><div class="empty">로딩 중...</div></div>`;
+  document.getElementById('popBg').classList.add('on');
+  try{
+    const snap=await db.collection('comments').where('nick','==',nick).get();
+    const docs=[];snap.forEach(d=>docs.push({id:d.id,...d.data()}));
+    docs.sort((a,b)=>(b.score||0)-(a.score||0));
+    const w=document.getElementById('popPhCmts');
+    if(!docs.length){w.innerHTML='<div class="empty">작성한 코멘트가 없어요</div>';return;}
+    w.innerHTML=docs.map(d=>{
+      const prod=P.find(x=>x.id===d.prodId);
+      const c=C.find(x=>x.id===d.caseId);
+      return`<div class="cmt-box">
+        <div class="cmt-top"><span class="cmt-nick">${c?'케이스 #'+c.id:d.caseId}</span><span class="cmt-date">${d.date||''}</span></div>
+        ${prod?`<div style="font-size:11px;color:var(--p);font-weight:600;margin-bottom:6px">${prod.e} ${prod.n}</div>`:''}
+        <div class="cmt-text">${d.text}</div>
+        <div style="font-size:12px;color:var(--t3)">👍 ${d.upvotes||0} · 👎 ${d.downvotes||0}</div>
+      </div>`;}).join('');
+  }catch(e){document.getElementById('popPhCmts').innerHTML='<div class="empty">불러오기 실패</div>';}
+}
+
+function closePop(){document.getElementById('popBg').classList.remove('on');}
+
+/* RANKING */
+function switchRTab(t,btn){document.querySelectorAll('.segtab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderRanking(t);}
+
+async function renderRanking(t){
+  const w=document.getElementById('rcontent');
+  w.innerHTML='<div class="empty">로딩 중...</div>';
+  let prodCount={},ingCount={},comboCount={},total=0;
+  try{
+    if(!RESP_CACHE)RESP_CACHE=await db.collection('responses').get();
+    RESP_CACHE.forEach(d=>{
+      total++;const pairs=d.data().pairs||[];
+      pairs.forEach((p,idx)=>{
+        const wt=idx===0?3:idx===1?2:1;
+        if(p.pid)prodCount[p.pid]=(prodCount[p.pid]||0)+wt;
+        if(p.ing){ingCount[p.ing]=(ingCount[p.ing]||0)+wt;(p.top3||[]).forEach(x=>{if(x&&x!==p.ing)ingCount[x]=(ingCount[x]||0)+Math.round(wt*0.5);});}
+      });
+      if(pairs.length>=2){
+        for(let i=0;i<pairs.length-1;i++)for(let j=i+1;j<pairs.length;j++){
+          if(pairs[i].pid===pairs[j].pid)continue;
+          const a=pairs[i].ing,b=pairs[j].ing;
+          if(a&&b){const k=[a,b].sort().join(' + ');comboCount[k]=(comboCount[k]||0)+1;}
+          const a3=[pairs[i].ing,...(pairs[i].top3||[])].filter(Boolean).slice(0,3);
+          const b3=[pairs[j].ing,...(pairs[j].top3||[])].filter(Boolean).slice(0,3);
+          a3.forEach(x=>b3.forEach(y=>{if(x&&y&&x!==y){const k2=[x,y].sort().join(' + ');comboCount[k2]=(comboCount[k2]||0)+0.3;}}));
+        }
+      }
+    });
+  }catch(e){}
+  const maxP=Math.max(...Object.values(prodCount),1);
+  const maxI=Math.max(...Object.values(ingCount),1);
+  const maxC=Math.max(...Object.values(comboCount),1);
+
+  if(t==='product'){
+    const items=[...P].map(p=>({...p,pct:prodCount[p.id]?Math.round(prodCount[p.id]/maxP*100):0})).sort((a,b)=>b.pct-a.pct);
+    w.innerHTML=items.length?items.map((p,i)=>`
+      <div class="ri" onclick="openProdComments('${p.id}','${p.n}','${p.e}')">
+        <div class="rn2 ${i<3?'r'+(i+1):'rn3'}">${i+1}</div>
+        <div class="rin"><div class="rinm">${p.e} ${p.n}</div><div class="ris">${p.c}</div></div>
+        <div class="rir"><div style="font-size:15px;font-weight:700;color:var(--p)">${p.pct}%</div><div style="font-size:10px;color:var(--t3)">추천율 ›</div></div>
+      </div>`).join(''):'<div class="empty">제품 데이터가 없어요</div>';
+
+  }else if(t==='ingredient'){
+    const ingE=Object.entries(ingCount).sort((a,b)=>b[1]-a[1]).slice(0,15);
+    const comboE=Object.entries(comboCount).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    let html='';
+    html+=`<div class="sec-title">🌿 성분 추천율</div>`;
+    html+=ingE.length?ingE.map(([nm,cnt],i)=>`
+      <div class="ri" style="cursor:default">
+        <div class="rn2 ${i<3?'r'+(i+1):'rn3'}">${i+1}</div>
+        <div class="rin"><div class="rinm">${nm}</div><div class="ris">${cnt}회 추천</div></div>
+        <div class="rir"><div style="font-size:15px;font-weight:700;color:var(--p)">${Math.round(cnt/maxI*100)}%</div></div>
+      </div>`).join(''):'<div class="empty">아직 데이터가 없어요</div>';
+    html+=`<div class="sec-title">🔗 성분 조합</div>`;
+    html+=comboE.length?comboE.map(([combo,cnt],i)=>`
+      <div style="padding:13px;background:var(--card);border-radius:12px;border:.5px solid var(--bd);margin-bottom:8px">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+          ${combo.split(' + ').map(c=>`<span style="padding:5px 12px;background:var(--pb);color:var(--p);border-radius:999px;font-size:12px;font-weight:600">${c}</span>`).join('<span style="color:var(--t3);font-size:12px;align-self:center">+</span>')}
+        </div>
+        <div style="font-size:11px;color:var(--t3)">${cnt.toFixed(1)}회 함께 추천 · 조합 추천율 <strong style="color:var(--p)">${Math.round(cnt/maxC*100)}%</strong></div>
+      </div>`).join(''):'<div class="empty">아직 조합 데이터가 없어요</div>';
+    w.innerHTML=html;
+
+  }else{
+    let pharmScore={};
+    try{
+      const csnap=await db.collection('comments').get();
+      csnap.forEach(d=>{const x=d.data();const nick=x.nick;if(!nick)return;
+        if(!pharmScore[nick])pharmScore[nick]={nick,up:0,dn:0,comments:0,cases:0};
+        pharmScore[nick].up+=(x.upvotes||0);pharmScore[nick].dn+=(x.downvotes||0);pharmScore[nick].comments++;
+      });
+    }catch(e){}
+    if(RESP_CACHE)RESP_CACHE.forEach(d=>{const nick=d.data().nick;if(!nick)return;
+      if(!pharmScore[nick])pharmScore[nick]={nick,up:0,dn:0,comments:0,cases:0};
+      pharmScore[nick].cases++;
+    });
+    const sorted=Object.values(pharmScore).sort((a,b)=>(b.up-b.dn)-(a.up-a.dn));
+    w.innerHTML=sorted.length?sorted.map((p,i)=>{
+      const score=p.up-p.dn;const isMe=p.nick===S.user?.nick;
+      return`<div class="ri" onclick="openPharmacist('${p.nick}')">
+        <div class="rn2 ${i<3?'r'+(i+1):'rn3'}">${i+1}</div>
+        <div class="rin"><div class="rinm">💊 ${p.nick}${isMe?'<span class="you" style="background:var(--ac)">ME</span>':''}</div><div class="ris">케이스 ${p.cases}개 · 코멘트 ${p.comments}개</div></div>
+        <div class="rir"><div style="font-size:14px;font-weight:700;color:${score>=0?'var(--p)':'var(--red)'}">👍 ${score}</div><div style="font-size:10px;color:var(--t3)">${p.up}👍 ${p.dn}👎</div></div>
+      </div>`;}).join(''):'<div class="empty">아직 데이터가 없어요</div>';
+  }
+}
+
+/* MY */
+function renderMy(){
+  const nick=S.user?.nick||'약사';
+  document.getElementById('mynm').textContent=nick+' 님';
+  document.getElementById('sc').textContent=S.hist.length;
+  document.getElementById('sp2').textContent=S.hist.reduce((a,h)=>a+h.pairs.length,0);
+  document.getElementById('sm').textContent='-';
+  const l=document.getElementById('hlist');
+  if(!S.hist.length){l.innerHTML='<div class="empty">아직 참여한 케이스가 없어요</div>';return;}
+  l.innerHTML=S.hist.map(h=>`
+    <div class="hcd">
+      <div class="ht"><div class="hcs">케이스 #${h.caseId}</div><div class="hd">${h.date}</div></div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:8px">${h.caseTitle}</div>
+      ${h.pairs.map((p,i)=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);margin-bottom:4px"><div class="prk" style="width:16px;height:16px;font-size:9px">${i+1}</div><span>${p.pnm} · ${p.ing}</span></div>`).join('')}
+    </div>`).join('');
+}
+
+/* TOAST */
+let tt=null;
+function toast(msg){
+  const e=document.getElementById('toast');e.textContent=msg;e.classList.add('show');
+  if(tt)clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2000);
+}
+
+window.addEventListener('load',function(){gs('loginScreen');});
+</script>
+</body>
+</html>
